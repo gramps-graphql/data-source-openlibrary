@@ -10,8 +10,7 @@ jest.mock('../src/connector', () =>
   })),
 );
 
-// TODO: Update the data source name.
-const DATA_SOURCE_NAME = 'YourDataSource';
+const DATA_SOURCE_NAME = 'OpenLibrary';
 
 const connector = new Connector();
 const model = new Model({ connector });
@@ -22,12 +21,12 @@ describe(`${DATA_SOURCE_NAME}Model`, () => {
   });
 
   // TODO: Update this test to use your model’s method(s).
-  describe('getById()', () => {
-    it('calls the correct endpoint with a given ID', () => {
+  describe('searchBooksByTitle()', () => {
+    it('calls the correct endpoint with a given title', () => {
       const spy = jest.spyOn(connector, 'get');
 
-      model.getById('1234');
-      expect(spy).toHaveBeenCalledWith('/data/1234');
+      model.searchBooksByTitle('Fight Club');
+      expect(spy).toHaveBeenCalledWith('/search.json?q=Fight Club');
     });
 
     it('throws a GrampsError if something goes wrong', async () => {
@@ -38,8 +37,7 @@ describe(`${DATA_SOURCE_NAME}Model`, () => {
       );
 
       try {
-        // TODO: Update to use one of your model’s methods.
-        await model.getById('1234');
+        await model.searchBooksByTitle('Fight Club');
       } catch (error) {
         expect(error.isBoom).toEqual(true);
       }
@@ -51,7 +49,7 @@ describe(`${DATA_SOURCE_NAME}Model`, () => {
     const mockError = {
       statusCode: 401,
       options: {
-        uri: 'https://example.org/',
+        uri: 'https://openlibrary.org',
       },
     };
 
@@ -67,15 +65,14 @@ describe(`${DATA_SOURCE_NAME}Model`, () => {
       );
 
       try {
-        // TODO: Update to use one of your model’s methods.
-        await model.getById(1234);
+        await model.searchBooksByTitle('Fight Club');
       } catch (error) {
         // Check that GrampsError properly received the error detail.
         expect(error).toHaveProperty('isBoom', true);
         expect(error.output).toHaveProperty('statusCode', 401);
         expect(error.output.payload).toHaveProperty(
           'targetEndpoint',
-          'https://example.org/',
+          'https://openlibrary.org',
         );
         expect(error.output.payload).toHaveProperty(
           'graphqlModel',

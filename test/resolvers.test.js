@@ -1,10 +1,9 @@
 import resolvers from '../src/resolvers';
 import expectMockFields from './helpers/expectMockFields';
-import expectMockList from './helpers/expectMockList';
+// import expectMockList from './helpers/expectMockList';
 import expectNullable from './helpers/expectNullable';
 
-// TODO: Update the data source name.
-const DATA_SOURCE_NAME = 'YourDataSource';
+const DATA_SOURCE_NAME = 'OpenLibrary';
 
 describe(`${DATA_SOURCE_NAME} resolvers`, () => {
   it('returns valid resolvers', () => {
@@ -15,37 +14,41 @@ describe(`${DATA_SOURCE_NAME} resolvers`, () => {
     ]);
   });
 
+  const modelResult = {
+    title_suggest: 'Fight Club',
+    author_name: ['Chuck Palahniuk'],
+    isbn: ['9782070422401'],
+  };
+
   describe('queryResolvers', () => {
     describe(DATA_SOURCE_NAME, () => {
-      it('loads a thing by its ID', () => {
+      it('searches for a book by title', () => {
         expect.assertions(1);
 
         const req = {};
 
-        // TODO: Update with mock arguments for your model method.
-        const args = { id: 'abc1234' };
+        const args = { title: 'Fight Club' };
 
-        // TODO: Update with the data source model name and method(s).
         const mockContext = {
-          YourDataSource: {
-            // For testing, we mock the model to simply return the ID.
-            getById: id => Promise.resolve(id),
+          OpenLibrary: {
+            searchBooksByTitle: () => Promise.resolve({ docs: [modelResult] }),
           },
         };
 
         return expect(
-          // TODO: Update to use your data source.
-          resolvers.queryResolvers.YourDataSource(req, args, mockContext),
-        ).resolves.toEqual('abc1234');
+          resolvers.queryResolvers.SearchBooksByTitle(req, args, mockContext),
+        ).resolves.toEqual(modelResult);
       });
     });
   });
 
   describe('dataResolvers', () => {
-    describe('PFX_YourDataSource', () => {
-      const resolver = resolvers.dataResolvers.PFX_YourDataSource;
-
-      expectNullable(resolver, ['name']);
+    describe('OL_SearchResult', () => {
+      const resolver = resolvers.dataResolvers.OL_SearchResult;
+      expect(resolver.title(modelResult)).toBe('Fight Club');
+      expect(resolver.author(modelResult)).toBe('Chuck Palahniuk');
+      expect(resolver.isbn(modelResult)).toBe('9782070422401');
+      expectNullable(resolver, ['title', 'author', 'isbn']);
     });
   });
 
@@ -55,11 +58,10 @@ describe(`${DATA_SOURCE_NAME} resolvers`, () => {
      * exploding. To that end, we’ll just check that the mock response returns
      * the proper fields.
      */
-    describe('PFX_YourDataSource', () => {
-      const mockResolvers = resolvers.mockResolvers.PFX_YourDataSource();
+    describe('OL_SearchResult', () => {
+      const mockResolvers = resolvers.mockResolvers.OL_SearchResult();
 
-      expectMockFields(mockResolvers, ['id', 'name', 'lucky_numbers']);
-      expectMockList(mockResolvers, ['lucky_numbers']);
+      expectMockFields(mockResolvers, ['title', 'author', 'isbn']);
     });
   });
 });

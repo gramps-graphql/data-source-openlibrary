@@ -1,12 +1,13 @@
 {
-  "name": "@gramps/data-source-base",
-  "description": "Base modules for a GrAMPS GraphQL data source.",
+  "name": "@gramps/data-source-openlibrary",
+  "description": "GrAMPS GraphQL data source for the OpenLibrary API.",
   "contributors": [
-    "Jason Lengstorf <jason@lengstorf.com>"
+    "Jason Lengstorf <jason@lengstorf.com>",
+    "Ryan Mackey <ryan.o.mackey@gmail.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/gramps-graphql/data-source-base.git"
+    "url": "https://github.com/gramps-graphql/data-source-openlibrary.git"
   },
   "main": "dist/index.js",
   "directories": {

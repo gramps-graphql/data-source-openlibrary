@@ -1,8 +1,7 @@
 import dataSource from '../src';
 import Model from '../src/model';
 
-// TODO: Update the data source name.
-const DATA_SOURCE_NAME = 'YourDataSource';
+const DATA_SOURCE_NAME = 'OpenLibrary';
 
 describe(`Data Source: ${DATA_SOURCE_NAME}`, () => {
   it('returns a context type', () => {

@@ -8,8 +8,7 @@ import Model from './model';
  * https://ibm.biz/graphql-data-source-main
  */
 export default {
-  // TODO: Rename the context to describe the data source.
-  context: 'YourDataSource',
+  context: 'OpenLibrary',
   model: new Model({ connector: new Connector() }),
   schema,
   resolvers,

@@ -1,4 +1,4 @@
-import { MockList } from 'graphql-tools';
+// import { MockList } from 'graphql-tools';
 import casual from 'casual';
 
 /*
@@ -9,33 +9,40 @@ import casual from 'casual';
 export default {
   // Queries (where does the data come from?)
   queryResolvers: {
-    // TODO: Update query resolver name(s) to match schema queries
-    YourDataSource: (rootValue, { id }, context) =>
+    SearchBooksByTitle: (rootValue, { title }, context) =>
       new Promise((resolve, reject) => {
-        // TODO: Update to use the model and call the proper method.
-        context.YourDataSource
-          .getById(id)
-          .then(resolve)
+        context.OpenLibrary
+          .searchBooksByTitle(title)
+          .then(data => resolve(data.docs[0]))
           .catch(reject);
       }),
   },
 
   // Data fields (which data from the response goes to which field?)
   dataResolvers: {
-    // TODO: Update to reference the schema type(s) and field(s).
-    PFX_YourDataSource: {
-      // If a field isn’t always set, but it shouldn’t break the response, make it nullable.
-      name: data => data.name || null,
+    OL_SearchResult: {
+      title: data => data.title_suggest || null,
+      author: data => {
+        if (data.author_name && data.author_name.length) {
+          return data.author_name[0];
+        }
+        return null;
+      },
+      isbn: data => {
+        if (data.isbn && data.isbn.length) {
+          return data.isbn[0];
+        }
+        return null;
+      },
     },
   },
 
   // Mock data (How can I get real-feeling fake data while working offline?)
   mockResolvers: {
-    // TODO: Update to mock all schema fields and types.
-    PFX_YourDataSource: () => ({
-      id: casual.uuid,
-      name: casual.name,
-      lucky_numbers: () => new MockList([0, 3]),
+    OL_SearchResult: () => ({
+      title: casual.title,
+      author: casual.name,
+      isbn: casual.uuid,
     }),
   },
 };

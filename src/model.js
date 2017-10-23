@@ -5,19 +5,16 @@ import { GraphQLModel, GrampsError } from '@gramps/gramps-express';
  * https://ibm.biz/graphql-data-source-model
  */
 
-// TODO: change `YourDataSourceModel` to a descriptive name
-export default class YourDataSourceModel extends GraphQLModel {
+export default class OpenLibraryModel extends GraphQLModel {
   /**
-   * Loads a thing by its ID
-   * @param  {String}  id  the ID of the thing to load
+   * Search for books
+   * @param  {String}  title  the title of the thing to load
    * @return {Promise}     resolves with the loaded user data
    */
-  getById(id) {
-    return this.connector.get(`/data/${id}`).catch(res =>
+  searchBooksByTitle(title) {
+    return this.connector.get(`/search.json?q=${title}`).catch(res =>
       this.throwError(res, {
-        description: 'This is an example call. Add your own!',
-        docsLink:
-          'https://gramps-graphql.github.io/gramps-express/data-source/tutorial/',
+        description: 'Error querying OpenLibrary.',
       }),
     );
   }
